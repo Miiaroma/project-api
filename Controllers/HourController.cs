@@ -7,41 +7,41 @@ using project_api.Models;
 namespace project_api.Controllers
 {
     [Route("api/[controller]")]
-    public class PersonController : ControllerBase
+    public class HourController : ControllerBase
     {
-         public PersonController(Database db)
+         public HourController(Database db)
         {
             Db = db;
         }
 
-        // GET api/Person
+        // GET api/Hour
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             await Db.Connection.OpenAsync();
-            var query = new Person(Db);
+            var query = new Hour(Db);
             var result = await query.GetAllAsync();
-            Console.WriteLine("Test");
+            //Console.WriteLine("Test");
             return new OkObjectResult(result);
         }
 
-        // GET api/Person/5
+        // GET api/Hour/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOne(int id)
         {
             await Db.Connection.OpenAsync();
-            var query = new Person(Db);
+            var query = new Hour(Db);
             var result = await query.FindOneAsync(id);
             if (result is null)
                 return new NotFoundResult();
             return new OkObjectResult(result);
         }
 
-        // POST api/Person
+        // POST api/Hour
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]Person body)
+        public async Task<IActionResult> Post([FromBody]Hour body)
         {
-            await Db.Connection.OpenAsync();            
+            await Db.Connection.OpenAsync();          
             body.Db = Db;
             int result=await body.InsertAsync();
             Console.WriteLine("inserted id="+result);
@@ -51,22 +51,19 @@ namespace project_api.Controllers
             return new OkObjectResult(result);
         }
 
-       // PUT api/Person/5
+       // PUT api/Hour/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOne(int id, [FromBody] Person body)
+        public async Task<IActionResult> PutOne(int id, [FromBody] Hour body)
         {
             Console.WriteLine("update called");
             await Db.Connection.OpenAsync();
             Console.WriteLine(body);
-            var query = new Person(Db);
-            // body.password = BCrypt.Net.BCrypt.HashPassword(body.password);
+            var query = new Hour(Db);         
     
             var result = await query.FindOneAsync(id);
-            result.firstname=body.firstname;
-            result.lastname=body.lastname;
-            result.city=body.city;
-            result.birth_year=body.birth_year;
-            result.salary=body.salary;
+            result.id_project=body.id_project;
+            result.id_person=body.id_person;
+            result.work_hour=body.work_hour;            
 
             if (result is null)
                 return new NotFoundResult();
@@ -81,12 +78,12 @@ namespace project_api.Controllers
             }
         }
 
-        // DELETE api/Person/5
+        // DELETE api/Hour/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOne(int id)
         {
             await Db.Connection.OpenAsync();
-            var query = new Person(Db);
+            var query = new Hour(Db);
             var result = await query.FindOneAsync(id);
             if (result is null)
                 return new NotFoundResult();

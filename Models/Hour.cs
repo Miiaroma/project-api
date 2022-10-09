@@ -4,47 +4,45 @@ using System.Data.Common;
 using System.Threading.Tasks;
 using MySqlConnector;
 
-namespace project_api.Models
+namespace project_api
 {
-    public class Person
+    public class Hour
     {
+        public int? id_hour { get; set; }
+        public int? id_project { get; set; }        
         public int? id_person { get; set; }
-        public string? firstname { get; set; }
-        public string? lastname { get; set; }
-        public string? city { get; set; }
-        public int? birth_year { get; set; }
-        public double? salary { get; set; }
-        
+        public int? work_hour { get; set; }
+       
 
         internal Database? Db { get; set; }
 
-        public Person()
+        public Hour()
         {
         }
 
-        internal Person(Database db)
+        internal Hour(Database db)
         {
             Db = db;
         }
 
-        public async Task<List<Person>> GetAllAsync()
+        public async Task<List<Hour>> GetAllAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT * FROM  person ;";
+            cmd.CommandText = @"SELECT * FROM  hour ;";
             var result=await ReturnAllAsync(await cmd.ExecuteReaderAsync());
            // Console.WriteLine(result);
             return await ReturnAllAsync(await cmd.ExecuteReaderAsync());
         }
 
-        public async Task<Person> FindOneAsync(int id_person)
+        public async Task<Hour> FindOneAsync(int id_hour)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT * FROM  person  WHERE  id_person  = @id_person";
+            cmd.CommandText = @"SELECT * FROM  hour  WHERE  id_hour  = @id_hour";
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@id_person",
+                ParameterName = "@id_hour",
                 DbType = DbType.Int32,
-                Value = id_person,
+                Value = id_hour,
             });
             var result = await ReturnAllAsync(await cmd.ExecuteReaderAsync());
             //Console.WriteLine(result.Count);
@@ -62,7 +60,7 @@ namespace project_api.Models
         {
             using var txn = await Db.Connection.BeginTransactionAsync();
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM  person ";
+            cmd.CommandText = @"DELETE FROM hour";
             await cmd.ExecuteNonQueryAsync();
             await txn.CommitAsync();
         }
@@ -71,8 +69,8 @@ namespace project_api.Models
         public async Task<int> InsertAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText=@"insert into person(firstname,lastname,city,birth_year,salary) 
-            values(@firstname,@lastname,@city,@birth_year,@salary);";
+            cmd.CommandText=@"insert into hour(id_project,id_person,work_hour) 
+            values(@id_project,@id_person,@work_hour);";
             BindParams(cmd);
             try
             {
@@ -90,10 +88,10 @@ namespace project_api.Models
         {
             using var cmd = Db.Connection.CreateCommand();
             
-            cmd.CommandText = @"UPDATE  user  SET  firstname  = @firstname,  lastname=@lastname, city  = @city, birth_year = @birth_year, salary=@salary WHERE  idperson  = @idperson;";
+            cmd.CommandText = @"UPDATE  hour  SET  id_project  = @id_project,  id_person  = @id_person, work_hour = @work_hour WHERE  id_hour  = @id_hour;";
             BindParams(cmd);
             BindId(cmd);
-            Console.WriteLine("id="+id_person);
+            //Console.WriteLine("id="+id_hour);
             int returnValue=await cmd.ExecuteNonQueryAsync();
             return returnValue;
         }
@@ -101,27 +99,28 @@ namespace project_api.Models
         public async Task DeleteAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM  person  WHERE  id_person  = @id_person;";
+            cmd.CommandText = @"DELETE FROM  user  WHERE  id_hour = @id_hour;";
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
         }
 
-        private async Task<List<Person>> ReturnAllAsync(DbDataReader reader)
+        private async Task<List<Hour>> ReturnAllAsync(DbDataReader reader)
         {
-            var posts = new List<Person>();
+            var posts = new List<Hour>();
             using (reader)
             {
                 while (await reader.ReadAsync())
                 {
-                    var post = new Person(Db)
+                    var post = new Hour(Db)
                     {
-                        id_person = reader.GetInt32(0),
-                        firstname = reader.GetString(1),
-                        lastname = reader.GetString(2),
-                        city = reader.GetString(3),
-                        birth_year = reader.GetInt32(4),
-                        salary = reader.GetInt32(5),                        
-                    };                   
+                        id_hour = reader.GetInt32(0),
+                        id_project = reader.GetInt32(1),
+                        id_person = reader.GetInt32(2),                        
+                        work_hour = null
+                    };
+                    if (!reader.IsDBNull(3))
+                        post.work_hour = reader.GetInt32(3);                    
+                    posts.Add(post);
                 }
             }
             return posts;
@@ -131,9 +130,9 @@ namespace project_api.Models
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@id_person",
+                ParameterName = "@id_hour",
                 DbType = DbType.Int32,
-                Value = id_person,
+                Value = id_hour,
             });
         }
 
@@ -141,34 +140,22 @@ namespace project_api.Models
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@firstname",
-                DbType = DbType.String,
-                Value = firstname,
-            });
-            cmd.Parameters.Add(new MySqlParameter
-            {
-                ParameterName = "@lastname",
-                DbType = DbType.String,
-                Value = lastname,
-            });
-            cmd.Parameters.Add(new MySqlParameter
-            {
-                ParameterName = "@city",
-                DbType = DbType.String,
-                Value = city,
-            });
-            cmd.Parameters.Add(new MySqlParameter
-            {
-                ParameterName = "@birth_year",
+                ParameterName = "@id_project",
                 DbType = DbType.Int32,
-                Value = birth_year,
+                Value = id_project,
             });
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@salary",
+                ParameterName = "@id_person",
                 DbType = DbType.Int32,
-                Value = salary,
+                Value = id_person,
             });
+            cmd.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@work_hour",
+                DbType = DbType.Int32,
+                Value = work_hour,
+            });           
         }
     }
 }
