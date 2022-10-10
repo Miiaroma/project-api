@@ -14,7 +14,7 @@ namespace project_api.Models
         public string? city { get; set; }
         public int? birth_year { get; set; }
         public double? salary { get; set; }
-        
+
 
         internal Database? Db { get; set; }
 
@@ -31,8 +31,8 @@ namespace project_api.Models
         {
             using var cmd = Db.Connection.CreateCommand();
             cmd.CommandText = @"SELECT * FROM  person ;";
-            var result=await ReturnAllAsync(await cmd.ExecuteReaderAsync());
-           // Console.WriteLine(result);
+            var result = await ReturnAllAsync(await cmd.ExecuteReaderAsync());
+            // Console.WriteLine(result);
             return await ReturnAllAsync(await cmd.ExecuteReaderAsync());
         }
 
@@ -48,10 +48,12 @@ namespace project_api.Models
             });
             var result = await ReturnAllAsync(await cmd.ExecuteReaderAsync());
             //Console.WriteLine(result.Count);
-            if(result.Count > 0){
+            if (result.Count > 0)
+            {
                 return result[0];
             }
-            else {
+            else
+            {
                 return null;
             }
             //return result.Count > 0 ? result[0] : null;
@@ -66,35 +68,35 @@ namespace project_api.Models
             await cmd.ExecuteNonQueryAsync();
             await txn.CommitAsync();
         }
-    
+
 
         public async Task<int> InsertAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText=@"insert into person(firstname,lastname,city,birth_year,salary) 
+            cmd.CommandText = @"insert into person(firstname,lastname,city,birth_year,salary) 
             values(@firstname,@lastname,@city,@birth_year,@salary);";
             BindParams(cmd);
             try
             {
                 await cmd.ExecuteNonQueryAsync();
-                int lastInsertId = (int) cmd.LastInsertedId; 
+                int lastInsertId = (int)cmd.LastInsertedId;
                 return lastInsertId;
             }
             catch (System.Exception)
-            {   
+            {
                 return 0;
-            } 
+            }
         }
 
         public async Task<int> UpdateAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            
+
             cmd.CommandText = @"UPDATE  user  SET  firstname  = @firstname,  lastname=@lastname, city  = @city, birth_year = @birth_year, salary=@salary WHERE  idperson  = @idperson;";
             BindParams(cmd);
             BindId(cmd);
-            Console.WriteLine("id="+id_person);
-            int returnValue=await cmd.ExecuteNonQueryAsync();
+            Console.WriteLine("id=" + id_person);
+            int returnValue = await cmd.ExecuteNonQueryAsync();
             return returnValue;
         }
 
@@ -116,17 +118,29 @@ namespace project_api.Models
                     var post = new Person(Db)
                     {
                         id_person = reader.GetInt32(0),
-                        firstname = reader.GetString(1),
-                        lastname = reader.GetString(2),
-                        city = reader.GetString(3),
-                        birth_year = reader.GetInt32(4),
-                        salary = reader.GetInt32(5),                        
-                    };                   
+                        firstname = null,
+                        lastname = null,
+                        city = null,
+                        birth_year = null,
+                        salary = null,
+                    };
+                    if (!reader.IsDBNull(1))
+                        post.firstname = reader.GetString(1);
+                    if (!reader.IsDBNull(2))
+                        post.lastname = reader.GetString(2);
+                    if (!reader.IsDBNull(3))
+                        post.city = reader.GetString(3);
+                    if (!reader.IsDBNull(4))
+                        post.birth_year = reader.GetInt32(4);
+                    if (!reader.IsDBNull(5))
+                        post.salary = reader.GetDouble(5);
+
+                    posts.Add(post);
                 }
             }
             return posts;
         }
-        
+
         private void BindId(MySqlCommand cmd)
         {
             cmd.Parameters.Add(new MySqlParameter
@@ -166,7 +180,7 @@ namespace project_api.Models
             cmd.Parameters.Add(new MySqlParameter
             {
                 ParameterName = "@salary",
-                DbType = DbType.Int32,
+                DbType = DbType.Double,
                 Value = salary,
             });
         }

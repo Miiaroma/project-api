@@ -99,7 +99,7 @@ namespace project_api
         public async Task DeleteAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM  user  WHERE  id_hour = @id_hour;";
+            cmd.CommandText = @"DELETE FROM  hour  WHERE  id_hour = @id_hour;";
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
         }

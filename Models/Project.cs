@@ -88,14 +88,20 @@ namespace project_api
                     var post = new Project(Db)
                     {
                         id_project = reader.GetInt32(0),
-                        pname = reader.GetString(1),
-                        place = reader.GetString(2),
+                        pname = null,
+                        place = null,
                     };
+                    if (!reader.IsDBNull(1))
+                        post.pname = reader.GetString(1);
+
+                    if (!reader.IsDBNull(2))
+                        post.place = reader.GetString(2);
                     posts.Add(post);
+                    
                 }
             }
             return posts;
-        }
+        }       
 
         private void BindId(MySqlCommand cmd)
         {

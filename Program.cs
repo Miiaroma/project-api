@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using project_api;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient(_ => new Database(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddCors();
+
+/*builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("BasicAuthentication", new AuthorizationPolicyBuilder("BasicAuthentication").RequireAuthenticatedUser().Build());
+});*/
 
 var app = builder.Build();
 
@@ -23,6 +30,7 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
 
 app.UseCors(builder =>
 {
@@ -46,5 +54,4 @@ app.Use(async (contex, next)=>
 }
 );
 }
-
 app.Run();
