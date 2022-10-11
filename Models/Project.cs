@@ -32,7 +32,7 @@ namespace project_api
         public async Task<Project> FindOneAsync(int id_project)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT * FROM  course  WHERE  id_project  = @id_project";
+            cmd.CommandText = @"SELECT * FROM  project  WHERE  id_project  = @id_project";
             cmd.Parameters.Add(new MySqlParameter
             {
                 ParameterName = "@id_project",
@@ -47,24 +47,25 @@ namespace project_api
         public async Task<int> InsertAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"INSERT INTO  project  (id_project, pname, place) VALUES (@id_project, @pname, @place);";
+            cmd.CommandText = @"INSERT INTO  project(id_project, pname, place) VALUES (@id_project, @pname, @place);";
             BindId(cmd);
             BindParams(cmd);
             try
             {
-                int affected=await cmd.ExecuteNonQueryAsync();
-                return affected; 
+                await cmd.ExecuteNonQueryAsync();
+                int lastInsertId = (int)@id_project;
+                return lastInsertId;
             }
             catch (System.Exception)
             {   
                 return 0;
             } 
-        }
+        } 
 
         public async Task UpdateAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"UPDATE  course  SET  id_project  = @id_project,  pname  = @pname,  place  = @place WHERE  id_project  = @id_project;";
+            cmd.CommandText = @"UPDATE  project  SET  id_project  = @id_project,  pname  = @pname,  place  = @place WHERE  id_project  = @id_project;";
             BindParams(cmd);
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
@@ -73,7 +74,7 @@ namespace project_api
         public async Task DeleteAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM  course  WHERE  id_project  = @id_project;";
+            cmd.CommandText = @"DELETE FROM  project  WHERE  id_project  = @id_project;";
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
         }

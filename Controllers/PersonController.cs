@@ -43,6 +43,7 @@ namespace project_api.Controllers
         {
             await Db.Connection.OpenAsync();            
             body.Db = Db;
+            Console.WriteLine(body.id_person);
             int result=await body.InsertAsync();
             Console.WriteLine("inserted id="+result);
             if(result == 0){

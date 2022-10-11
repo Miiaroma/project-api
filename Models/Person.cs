@@ -73,13 +73,14 @@ namespace project_api.Models
         public async Task<int> InsertAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"insert into person(firstname,lastname,city,birth_year,salary) 
-            values(@firstname,@lastname,@city,@birth_year,@salary);";
+            cmd.CommandText = @"INSERT INTO person(id_person,firstname,lastname,city,birth_year,salary) 
+            values(@id_person,@firstname,@lastname,@city,@birth_year,@salary);";
             BindParams(cmd);
+            BindId(cmd);
             try
             {
                 await cmd.ExecuteNonQueryAsync();
-                int lastInsertId = (int)cmd.LastInsertedId;
+                int lastInsertId =(int)@id_person;
                 return lastInsertId;
             }
             catch (System.Exception)
@@ -92,7 +93,7 @@ namespace project_api.Models
         {
             using var cmd = Db.Connection.CreateCommand();
 
-            cmd.CommandText = @"UPDATE  user  SET  firstname  = @firstname,  lastname=@lastname, city  = @city, birth_year = @birth_year, salary=@salary WHERE  idperson  = @idperson;";
+            cmd.CommandText = @"UPDATE  person  SET  firstname  = @firstname,  lastname=@lastname, city  = @city, birth_year = @birth_year, salary=@salary WHERE  id_person  = @id_person;";
             BindParams(cmd);
             BindId(cmd);
             Console.WriteLine("id=" + id_person);
