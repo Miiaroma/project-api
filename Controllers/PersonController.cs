@@ -60,7 +60,7 @@ namespace project_api.Controllers
             await Db.Connection.OpenAsync();
             Console.WriteLine(body);
             var query = new Person(Db);
-            // body.password = BCrypt.Net.BCrypt.HashPassword(body.password);
+            body.password = BCrypt.Net.BCrypt.HashPassword(body.password);
     
             var result = await query.FindOneAsync(id);
             result.firstname=body.firstname;
