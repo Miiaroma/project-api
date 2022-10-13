@@ -8,7 +8,7 @@ namespace project_api
 {
     public class Login
     {
-        //public Int32? id_person { get; set; }      
+        public Int32? id_person { get; set; }      
         public string? password { get; set; }
 
         internal Database? Db { get; set; }
