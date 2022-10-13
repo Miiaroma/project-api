@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using project_api;
 
@@ -14,10 +15,14 @@ builder.Services.AddTransient(_ => new Database(builder.Configuration.GetConnect
 
 builder.Services.AddCors();
 
-/*builder.Services.AddAuthorization(options =>
+builder.Services
+    .AddAuthentication()
+    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", options => { });
+
+builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("BasicAuthentication", new AuthorizationPolicyBuilder("BasicAuthentication").RequireAuthenticatedUser().Build());
-});*/
+});
 
 var app = builder.Build();
 

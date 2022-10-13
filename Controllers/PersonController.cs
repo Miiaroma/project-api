@@ -68,6 +68,7 @@ namespace project_api.Controllers
             result.city=body.city;
             result.birth_year=body.birth_year;
             result.salary=body.salary;
+            result.password=body.password;
 
             if (result is null)
                 return new NotFoundResult();

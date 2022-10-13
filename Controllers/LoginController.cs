@@ -21,9 +21,10 @@ namespace project_api.Controllers
         {
             Console.WriteLine(body.id_person);
             Console.WriteLine(body.password);
+            string id_person=body.id_person.ToString();
             await Db.Connection.OpenAsync();
             var query = new Login(Db);
-            var result = await query.GetPassword(body.id_person);
+            var result = await query.GetPassword(id_person);
    
             if (result is null || ! BCrypt.Net.BCrypt.Verify(body.password, result))
             {
@@ -35,7 +36,7 @@ namespace project_api.Controllers
                 // authentication successful
                 return new OkObjectResult(true);
                 Singleton singObject=Singleton.Instance;
-                singObject.Idperson=body.id_person;
+                singObject.Id_person=body.id_person;
                 singObject.Password=body.password;
             }
             

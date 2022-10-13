@@ -8,7 +8,7 @@ namespace project_api
 {
     public class Login
     {
-        public int? id_person { get; set; }      
+        //public Int32? id_person { get; set; }      
         public string? password { get; set; }
 
         internal Database? Db { get; set; }
@@ -23,7 +23,7 @@ namespace project_api
         }
 
 
-        public async Task<string> GetPassword(int id_person)
+        public async Task<string> GetPassword(string id_person)
         {
             using var cmd = Db.Connection.CreateCommand();
             cmd.CommandText = @"SELECT  password   FROM  person  WHERE  id_person  = @id_person";
@@ -44,7 +44,7 @@ namespace project_api
             {
                 while (await reader.ReadAsync())
                 {
-                    var user = new Login(Db)
+                    var person = new Login(Db)
                     {
                         password = reader.GetString(0)
                     };
