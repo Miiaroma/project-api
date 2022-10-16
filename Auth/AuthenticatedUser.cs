@@ -1,8 +1,8 @@
-//AuthenticatedPerson.cs
+//AuthenticatedUser.cs
 using System.Security.Principal;
-public class AuthenticatedPerson : IIdentity
+public class AuthenticatedUser : IIdentity
 {
-    public AuthenticatedPerson(string authenticationType, bool isAuthenticated, string name)
+    public AuthenticatedUser(string authenticationType, bool isAuthenticated, string name)
     {
         AuthenticationType = authenticationType;
         IsAuthenticated = isAuthenticated;

@@ -40,8 +40,7 @@ namespace project_api.Controllers
         {
             await Db.Connection.OpenAsync();
             body.Db = Db;
-            int result = await body.InsertAsync();
-            //Console.WriteLine(body.date);
+            int result = await body.InsertAsync();           
             if (result == 1)
             {
                 return new OkObjectResult(result);

@@ -74,8 +74,8 @@ namespace project_api.Models
         public async Task<int> InsertAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"INSERT INTO person(id_person,firstname,lastname,city,birth_year,salary) 
-            values(@id_person,@firstname,@lastname,@city,@birth_year,@salary);";
+            cmd.CommandText = @"INSERT INTO person(id_person,firstname,lastname,city,birth_year,salary, password) 
+            values(@id_person,@firstname,@lastname,@city,@birth_year,@salary,@password);";
             BindParams(cmd);
             BindId(cmd);
             try
@@ -125,6 +125,8 @@ namespace project_api.Models
                         city = null,
                         birth_year = null,
                         salary = null,
+                        password = reader.GetString(6),
+
                     };
                     if (!reader.IsDBNull(1))
                         post.firstname = reader.GetString(1);
@@ -136,6 +138,8 @@ namespace project_api.Models
                         post.birth_year = reader.GetInt32(4);
                     if (!reader.IsDBNull(5))
                         post.salary = reader.GetDouble(5);
+                    if (!reader.IsDBNull(6))
+                        post.password = reader.GetString(6);
 
                     posts.Add(post);
                 }
@@ -184,6 +188,13 @@ namespace project_api.Models
                 ParameterName = "@salary",
                 DbType = DbType.Double,
                 Value = salary,
+            });
+
+             cmd.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@password",
+                DbType = DbType.String,
+                Value = password,
             });
         }
     }

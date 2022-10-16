@@ -47,12 +47,12 @@ public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSc
         Login login = new Login(db);
         db.Connection.Open();
         var passwordFromDatabase = login.GetPassword(authUsername).Result;
-        //Console.WriteLine(passwordFromDatabase);
+        Console.WriteLine(passwordFromDatabase);
 
         if (passwordFromDatabase != null && BCrypt.Net.BCrypt.Verify(authPassword, passwordFromDatabase))
         {
             Console.WriteLine("RIGHT : "); 
-            var authenticatedUser = new AuthenticatedPerson("BasicAuthentication", true, authUsername);
+            var authenticatedUser = new AuthenticatedUser("BasicAuthentication", true, authUsername);
             var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(authenticatedUser));
             return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(claimsPrincipal, Scheme.Name)));
 
