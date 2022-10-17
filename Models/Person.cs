@@ -14,7 +14,7 @@ namespace project_api.Models
         public string? city { get; set; }
         public int? birth_year { get; set; }
         public double? salary { get; set; }
-        public string password { get; set; }
+        public string? password { get; set; }
 
 
         internal Database? Db { get; set; }

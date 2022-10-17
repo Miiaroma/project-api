@@ -41,7 +41,8 @@ namespace project_api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]Person body)
         {
-            await Db.Connection.OpenAsync();            
+            await Db.Connection.OpenAsync();   
+            body.password=BCrypt.Net.BCrypt.HashPassword(body.password);         
             body.Db = Db;
             Console.WriteLine(body.id_person);
             int result=await body.InsertAsync();
