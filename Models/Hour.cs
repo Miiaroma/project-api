@@ -71,7 +71,7 @@ namespace project_api
             using var cmd = Db.Connection.CreateCommand();
             cmd.CommandText=@"insert into hour(id_project,id_person,work_hour) 
             values(@id_project,@id_person,@work_hour);";
-            BindParams(cmd);
+            BindParams(cmd);           
             try
             {
                 await cmd.ExecuteNonQueryAsync();
