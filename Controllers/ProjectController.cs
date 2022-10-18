@@ -40,15 +40,11 @@ namespace project_api.Controllers
         {
             await Db.Connection.OpenAsync();
             body.Db = Db;
-            int result = await body.InsertAsync();           
-            if (result == 1)
-            {
-                return new OkObjectResult(result);
+            int result = await body.InsertAsync();            
+            if(result == 0){
+                return new ConflictObjectResult(0);
             }
-            else {
-                return new ConflictObjectResult(result);
-            }
-
+            return new OkObjectResult(result);
         }
 
         // PUT api/course/5
